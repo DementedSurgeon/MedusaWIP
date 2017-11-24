@@ -32,7 +32,7 @@ public class Walking : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Debug.Log (scanning);
+		//Debug.Log (scanning);
 		timer -= Time.deltaTime;
 		if (Input.GetKeyDown(KeyCode.Space)) {
 			timer = timerDelay;
@@ -106,7 +106,7 @@ public class Walking : MonoBehaviour {
 				scanCounter++;
 			}
 			nMA.destination = finalPosition;
-			Debug.Log (finalPosition);
+			Debug.DrawRay (finalPosition, Vector3.up, Color.red, 1.0f);
 			counter++;
 			if (!(counter < patrolLocations.Length))
 			{
