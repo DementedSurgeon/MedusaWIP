@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Walking : MonoBehaviour {
+public class MedusaBehaviour : MonoBehaviour {
 
 	public float walkRadius;
 	public float scanRadius;
@@ -17,7 +17,7 @@ public class Walking : MonoBehaviour {
 	private Vector3[] patrolLocations = new Vector3[3];
 
 	private float timer;
-	//private int counter = 0;
+	private int counter = 0;
 	private NavMeshAgent nMA;
 	Vector3 direction;
 	Vector3 beamThing;
@@ -31,7 +31,7 @@ public class Walking : MonoBehaviour {
 		patrolLocations [2] = patrol3;
 		beamThing = new Vector3 (transform.position.x, transform.position.y + 2, transform.position.z);
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown (KeyCode.C)) {
@@ -79,63 +79,46 @@ public class Walking : MonoBehaviour {
 		}
 
 
-	
+
+		Debug.Log (newDirection);
 		return newDirection;
 	}
 
 	Vector3 CheckDirection (Vector3 direction)
 	{
-		int counter = 0;
 		bool correcting = false;
 		Collider[] cols = Physics.OverlapSphere (direction, scanRadius);
 		Debug.DrawLine (beamThing, direction, Color.red, 10f);
 		for (int i = 0; i < cols.Length; i++) {
 			if (cols [i].transform.tag == "Player") {
-				Vector3 heading = direction - transform.position;
+				Vector3 heading = cols [i].transform.position - direction;
 				float dirNum = AngleDir(direction, heading, transform.up);
-				Debug.Log (dirNum + " d");
 				if (dirNum > 0) {
 					correcting = true;
 					while (correcting) {
-						direction = Quaternion.Euler (0, -2, 0) * (direction - transform.position) + transform.position;
+						direction = Quaternion.Euler (0, -10, 0) * direction;
 						Debug.DrawLine (beamThing, direction, Color.yellow, 10f);
 						cols = Physics.OverlapSphere (direction, scanRadius);
-						if (cols.Length > 0) {
-							for (int c = 0; c < cols.Length; c++) {
-								if (cols [c].transform.tag == "Player") {
-									c = cols.Length;
-								} else if (c == cols.Length - 1 && cols [c].transform.tag != "Player") {
-									correcting = false;
-								}
+						for (int c = 0; c < cols.Length; c++) {
+							if (cols [c].transform.tag == "Player") {
+								c = cols.Length;
+							} else if (c == cols.Length - 1 && cols [c].transform.tag != "Player") {
+								correcting = false;
 							}
-						} else {
-							correcting = false;
-						}
-						counter++;
-						if (counter > 100) {
-							correcting = false;
 						}
 					}
 				} else if (dirNum < 0) {
 					correcting = true;
 					while (correcting) {
-						direction = Quaternion.Euler (0, 2, 0) * (direction - transform.position) + transform.position;
+						direction = Quaternion.Euler (0, 10, 0) * direction;
 						Debug.DrawLine (beamThing, direction, Color.magenta, 10f);
 						cols = Physics.OverlapSphere (direction, scanRadius);
-						if (cols.Length > 0) {
-							for (int c = 0; c < cols.Length; c++) {
-								if (cols [c].transform.tag == "Player") {
-									c = cols.Length;
-								} else if (c == cols.Length - 1 && cols [c].transform.tag != "Player") {
-									correcting = false;
-								}
+						for (int c = 0; c < cols.Length; c++) {
+							if (cols [c].transform.tag == "Player") {
+								c = cols.Length;
+							} else if (c == cols.Length - 1 && cols [c].transform.tag != "Player") {
+								correcting = false;
 							}
-						} else {
-							correcting = false;
-						}
-						counter++;
-						if (counter > 100) {
-							correcting = false;
 						}
 					}
 				} else {
@@ -149,60 +132,23 @@ public class Walking : MonoBehaviour {
 
 	Vector3 ValidatePath (Vector3 path)
 	{
-		int counter = 0;
 		bool correcting = false;
-		bool furtherCorrecting = false;
-		Vector3 fCorrVector;
 		int layerMask = 1 << 8;
 		RaycastHit hit;
 		Debug.DrawLine (transform.position, new Vector3(path.x, transform.position.y, path.z), Color.blue, 10f);
 		if (Physics.Linecast(transform.position,new Vector3(path.x, transform.position.y, path.z),out hit, layerMask))
-			{
+		{
+			Debug.Log ("Working");
 			if (hit.collider.tag == "Player") {
-				fCorrVector = hit.point;
-				Vector3 heading = path - transform.position;
+				Vector3 heading = hit.transform.position - path;
 				float dirNum = AngleDir(path, heading, transform.up);
-				Debug.Log (dirNum + " p");
 				if (dirNum > 0) {
 					correcting = true;
 					while (correcting) {
-						path = Quaternion.Euler (0, -2, 0) * (path - transform.position) + transform.position;
+						path = Quaternion.Euler(0, -10, 0) * path;
 						Debug.DrawLine (transform.position, new Vector3(path.x, transform.position.y, path.z), Color.cyan, 10f);
-						Debug.DrawLine (transform.position, new Vector3(hit.point.x, transform.position.y + 2, hit.point.z), Color.black, 10f);
 						if (!Physics.Linecast (transform.position, new Vector3 (path.x, transform.position.y, path.z), out hit, layerMask)) {
 							correcting = false;
-							furtherCorrecting = true;
-
-						} else {
-							fCorrVector = hit.point;
-						}
-						counter++;
-						if (counter > 100) {
-							correcting = false;
-							counter = 0;
-						}
-					}
-					while (furtherCorrecting) {
-						path = Quaternion.Euler (0, -2, 0) * (path - transform.position) + transform.position;
-						fCorrVector = Quaternion.Euler (0, -2, 0) * (fCorrVector - transform.position) + transform.position;
-						Debug.DrawLine (transform.position, new Vector3(fCorrVector.x, transform.position.y, fCorrVector.z), Color.cyan, 10f);
-						Collider[] cols = Physics.OverlapBox(fCorrVector,new Vector3(0.5f,0.5f,0.5f));
-						if (cols.Length > 0) {
-							for (int c = 0; c < cols.Length; c++) {
-								if (cols [c].transform.tag == "Player") {
-									c = cols.Length;
-								} else if (c == cols.Length - 1 && cols [c].transform.tag != "Player") {
-									furtherCorrecting = false;
-								}
-							}
-						} else {
-							furtherCorrecting = false;
-						}
-						counter++;
-						if (counter > 100) {
-							furtherCorrecting = false;
-							counter = 0;
-							Debug.Log ("Break");
 						}
 					}
 
@@ -210,34 +156,10 @@ public class Walking : MonoBehaviour {
 				} else if (dirNum < 0) {
 					correcting = true;
 					while (correcting) {
-						path = Quaternion.Euler (0, 2, 0) * (path - transform.position) + transform.position;
+						path = Quaternion.Euler(0, 10, 0) * path;
 						Debug.DrawLine (transform.position, new Vector3(path.x, transform.position.y, path.z), Color.green, 10f);
 						if (!Physics.Linecast (transform.position, new Vector3 (path.x, transform.position.y, path.z), out hit, layerMask)) {
 							correcting = false;
-							furtherCorrecting = true;
-						} else {
-							fCorrVector = hit.point;
-						}
-						counter++;
-						if (counter > 100) {
-							correcting = false;
-						}
-					}
-					while (furtherCorrecting) {
-						path = Quaternion.Euler (0, 2, 0) * (path - transform.position) + transform.position;
-						fCorrVector = Quaternion.Euler (0, 2, 0) * (fCorrVector - transform.position) + transform.position;
-						Debug.DrawLine (transform.position, new Vector3 (fCorrVector.x, transform.position.y, fCorrVector.z), Color.green, 10f);
-						Collider[] cols = Physics.OverlapBox (fCorrVector, new Vector3 (0.5f, 0.5f, 0.5f));
-						if (cols.Length > 0) {
-							for (int c = 0; c < cols.Length; c++) {
-								if (cols [c].transform.tag == "Player") {
-									c = cols.Length;
-								} else if (c == cols.Length - 1 && cols [c].transform.tag != "Player") {
-									furtherCorrecting = false;
-								}
-							}
-						} else {
-							furtherCorrecting = false;
 						}
 					}
 				} else {
@@ -247,9 +169,9 @@ public class Walking : MonoBehaviour {
 			}
 
 
-	}
+		}
 		return path;
-}
+	}
 
 	float AngleDir(Vector3 fwd, Vector3 targetDir, Vector3 up) {
 		Vector3 perp = Vector3.Cross(fwd, targetDir);
@@ -266,11 +188,12 @@ public class Walking : MonoBehaviour {
 
 	void Patrol()
 	{
-		Vector3 newDirection = target.position + Random.insideUnitSphere * 10f;
+		Vector3 newDirection = FindNewDirection ();
 		NavMeshHit hit;
 		NavMesh.SamplePosition (new Vector3(newDirection.x,transform.position.y,newDirection.z), out hit, 1f, NavMesh.AllAreas);
 		beamThing = new Vector3 (transform.position.x, 0, transform.position.z);
 		direction = hit.position;
+		Debug.Log (direction);
 		direction = ValidatePath (direction);
 		direction = CheckDirection (direction);
 		nMA.destination = direction;
