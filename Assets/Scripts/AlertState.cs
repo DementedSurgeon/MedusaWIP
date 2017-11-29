@@ -26,7 +26,9 @@ public class AlertState : MonoBehaviour {
 
 	public void Alert(Transform alertCenter)
 	{
+		
 		agent.destination = alertCenter.position;
+
 		if (alertCenter.transform.parent != null) {
 			if (alertCenter.transform.parent.tag == "Player") {
 				counter++;
@@ -55,4 +57,6 @@ public class AlertState : MonoBehaviour {
 			}
 		}
 	}
+
+
 }

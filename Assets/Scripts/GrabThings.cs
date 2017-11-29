@@ -23,6 +23,8 @@ public class GrabThings : MonoBehaviour {
 				stuffs.isKinematic = true;
 				//stuffs.velocity = Vector3.zero;
 				//stuffs.angularVelocity = Vector3.zero;
+				stuff.gameObject.GetComponent<Noisemaker>().label = "Player";
+				stuff.gameObject.GetComponent<Noisemaker> ().thrower = transform;
 			}
 			if (Input.GetMouseButtonDown (1)) {
 				stuff.SetParent (null);

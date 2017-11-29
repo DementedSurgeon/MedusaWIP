@@ -6,6 +6,8 @@ public class Noisemaker : MonoBehaviour {
 
 	private Rigidbody rBody;
 	private Collider[] cols;
+	public string label = "None";
+	public Transform thrower;
 
 	// Use this for initialization
 	void Start () {
@@ -19,8 +21,10 @@ public class Noisemaker : MonoBehaviour {
 
 	void OnCollisionEnter (Collision col)
 	{
-		if (col.gameObject.tag == "Terrain") {
+		if (col.gameObject.tag == "Terrain" && label == "Player") {
 			if (rBody.velocity.x > 0 || rBody.velocity.y > 0 || rBody.velocity.z > 0) {
+				label = "None";
+				thrower = null;
 				cols = Physics.OverlapSphere (transform.position, 50f);
 				for (int i = 0; i < cols.Length; i++) {
 					if (cols [i].gameObject.tag == "Medusa") {
@@ -29,6 +33,9 @@ public class Noisemaker : MonoBehaviour {
 				}
 
 			}
+		} else if (col.gameObject.tag == "Medusa" && label == "Player") {
+			col.gameObject.GetComponent<AlertState> ().Alert (thrower);
+			label = "None";
 		}
 	}
 

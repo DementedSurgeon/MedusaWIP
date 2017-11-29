@@ -31,5 +31,13 @@ public class MirrorRot : MonoBehaviour {
 			Quaternion localRotation = Quaternion.Euler (rotX, rotY, -45);
 			transform.rotation = localRotation;
 		}
+
+		if (Input.GetKeyDown (KeyCode.E)) {
+			transform.position = new Vector3 (0.8f, 2.2f, transform.position.z);
+		}
+
+		if (Input.GetKeyDown (KeyCode.Q)) {
+			transform.position = new Vector3 (-1.3f, 3.0f, transform.position.z);
+		}
 	}
 }

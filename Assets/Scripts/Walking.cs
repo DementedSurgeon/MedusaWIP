@@ -14,6 +14,8 @@ public class Walking : MonoBehaviour {
 	public Vector3 patrol2;
 	public Vector3 patrol3;
 
+	private bool onCeiling;
+
 	private Vector3[] patrolLocations = new Vector3[3];
 
 	private float timer;
@@ -37,6 +39,12 @@ public class Walking : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.C)) {
 			Patrol ();
 		}
+		if (Input.GetKeyDown (KeyCode.J)) {
+			nMA.enabled = false;
+			Jump ();
+			nMA.enabled = true;
+			Patrol ();
+		}
 		//Debug.Log (scanning);
 		if (Vector3.Distance (transform.position, direction) <= 1) {
 			if (timer > 0) {
@@ -55,7 +63,7 @@ public class Walking : MonoBehaviour {
 		GameObject impact;
 		impact = col.gameObject;
 		if (impact.GetComponent<NavMeshObstacle> ().enabled == false) {
-			impact.gameObject.GetComponent<Rigidbody> ().AddForce (nMA.destination * 100000000);
+			impact.gameObject.GetComponent<Rigidbody> ().AddForce (nMA.destination * 100);
 		}
 	}
 
@@ -81,6 +89,17 @@ public class Walking : MonoBehaviour {
 
 	
 		return newDirection;
+	}
+
+	void Jump()
+	{
+		if (!onCeiling) {
+			transform.position = new Vector3 (transform.position.x, 38, transform.position.z);
+			onCeiling = true;
+		} else {
+			transform.position = new Vector3 (transform.position.x, 1, transform.position.z);
+			onCeiling = false;
+		}
 	}
 
 	Vector3 CheckDirection (Vector3 direction)
@@ -266,11 +285,9 @@ public class Walking : MonoBehaviour {
 
 	void Patrol()
 	{
-		Vector3 newDirection = target.position + Random.insideUnitSphere * 10f;
-		NavMeshHit hit;
-		NavMesh.SamplePosition (new Vector3(newDirection.x,transform.position.y,newDirection.z), out hit, 1f, NavMesh.AllAreas);
+		Vector3 newDirection = FindNewDirection ();
 		beamThing = new Vector3 (transform.position.x, 0, transform.position.z);
-		direction = hit.position;
+		direction = newDirection;
 		direction = ValidatePath (direction);
 		direction = CheckDirection (direction);
 		nMA.destination = direction;
