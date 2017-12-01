@@ -9,6 +9,7 @@ public class MirrorRot : MonoBehaviour {
 
 	private float rotY = 0.0f; // rotation around the up/y axis
 	private float rotX = 0.0f; // rotation around the right/x axis
+	public Camera camM;
 
 	void Start ()
 	{
@@ -28,16 +29,16 @@ public class MirrorRot : MonoBehaviour {
 
 			//rotX = Mathf.Clamp (rotX, -clampAngle, clampAngle);
 
-			Quaternion localRotation = Quaternion.Euler (rotX, rotY, -45);
+			Quaternion localRotation = Quaternion.Euler (rotX + transform.rotation.x, rotY + transform.rotation.y, -45);
 			transform.rotation = localRotation;
 		}
 
 		if (Input.GetKeyDown (KeyCode.E)) {
-			transform.position = new Vector3 (0.8f, 2.2f, transform.position.z);
+			transform.position = new Vector3(camM.ViewportToWorldPoint(new Vector3(0.9f,0,2)).x,camM.ViewportToWorldPoint(new Vector3(0.9f,0,2)).y,2);
 		}
 
 		if (Input.GetKeyDown (KeyCode.Q)) {
-			transform.position = new Vector3 (-1.3f, 3.0f, transform.position.z);
+			transform.position = new Vector3(camM.ViewportToWorldPoint(new Vector3(0.1f,0,2)).x,camM.ViewportToWorldPoint(new Vector3(0.1f,0,2)).y,2);
 		}
 	}
 }

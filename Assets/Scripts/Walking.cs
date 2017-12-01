@@ -94,7 +94,7 @@ public class Walking : MonoBehaviour {
 	void Jump()
 	{
 		if (!onCeiling) {
-			transform.position = new Vector3 (transform.position.x, 38, transform.position.z);
+			transform.position = new Vector3 (transform.position.x, 14, transform.position.z);
 			onCeiling = true;
 		} else {
 			transform.position = new Vector3 (transform.position.x, 1, transform.position.z);
