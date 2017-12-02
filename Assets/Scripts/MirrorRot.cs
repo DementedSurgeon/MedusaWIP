@@ -10,6 +10,8 @@ public class MirrorRot : MonoBehaviour {
 	private float rotY = 0.0f; // rotation around the up/y axis
 	private float rotX = 0.0f; // rotation around the right/x axis
 	public Camera camM;
+	private float mouseX;
+	private float mouseY;
 
 	void Start ()
 	{
@@ -20,25 +22,35 @@ public class MirrorRot : MonoBehaviour {
 
 	void Update ()
 	{
+		Debug.Log (camM.transform.localEulerAngles.x);
+		if (camM.transform.localEulerAngles.x > 30 && camM.transform.localEulerAngles.x < 90) {
+			transform.localEulerAngles = new Vector3 (-45, transform.localEulerAngles.y, transform.localEulerAngles.z);
+		} else if (camM.transform.localEulerAngles.x < 30) {
+			transform.localEulerAngles = new Vector3 (0, transform.localEulerAngles.y, transform.localEulerAngles.z);
+		}
+
+
 		if (Input.GetMouseButton (1)) {
-			float mouseX = -Input.GetAxis ("Mouse X");
-			float mouseY = -Input.GetAxis ("Mouse Y");
+			
+			mouseX = -Input.GetAxis ("Mouse X");
 
 			rotY += mouseX * mouseSensitivity * Time.deltaTime;
-			rotX += mouseY * mouseSensitivity * Time.deltaTime;
+
 
 			//rotX = Mathf.Clamp (rotX, -clampAngle, clampAngle);
 
-			Quaternion localRotation = Quaternion.Euler (rotX + transform.rotation.x, rotY + transform.rotation.y, -45);
-			transform.rotation = localRotation;
+			Vector3 localRotation = new Vector3 (0, rotY, -45);
+			transform.localEulerAngles = localRotation;
 		}
 
 		if (Input.GetKeyDown (KeyCode.E)) {
-			transform.position = new Vector3(camM.ViewportToWorldPoint(new Vector3(0.9f,0,2)).x,camM.ViewportToWorldPoint(new Vector3(0.9f,0,2)).y,2);
+			transform.localPosition = new Vector3(1.3f, transform.localPosition.y, transform.localPosition.z);
+			transform.localEulerAngles = new Vector3 (transform.localEulerAngles.x, 180, transform.localEulerAngles.z);
 		}
 
 		if (Input.GetKeyDown (KeyCode.Q)) {
-			transform.position = new Vector3(camM.ViewportToWorldPoint(new Vector3(0.1f,0,2)).x,camM.ViewportToWorldPoint(new Vector3(0.1f,0,2)).y,2);
+			transform.localPosition = new Vector3(-1.3f, transform.localPosition.y, transform.localPosition.z);
+			transform.localEulerAngles = new Vector3 (transform.localEulerAngles.x, 180, transform.localEulerAngles.z);
 		}
 	}
 }

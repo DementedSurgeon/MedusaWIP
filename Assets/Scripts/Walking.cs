@@ -14,6 +14,8 @@ public class Walking : MonoBehaviour {
 	public Vector3 patrol2;
 	public Vector3 patrol3;
 
+	public PillarManager pManager;
+
 	private bool onCeiling;
 
 	private Vector3[] patrolLocations = new Vector3[3];
@@ -67,11 +69,11 @@ public class Walking : MonoBehaviour {
 		}
 	}
 
-	Vector3 FindNewDirection()
+	Vector3 FindNewDirection(Transform newTransform)
 	{
-		Vector3 newDirection = transform.position + Random.onUnitSphere * 20f;
+		Vector3 newDirection = newTransform.position + Random.onUnitSphere * 75f;
 		NavMeshHit hit;
-		NavMesh.SamplePosition (new Vector3(newDirection.x,transform.position.y,newDirection.z), out hit, 20f, NavMesh.AllAreas);
+		NavMesh.SamplePosition (new Vector3(newDirection.x,transform.position.y,newDirection.z), out hit, 1f, NavMesh.AllAreas);
 		for (int i = 0; i < 100; i++) {
 			if (Vector3.Distance (transform.position, hit.position) >= 5.0f) {
 				i = 100;
@@ -285,7 +287,7 @@ public class Walking : MonoBehaviour {
 
 	void Patrol()
 	{
-		Vector3 newDirection = FindNewDirection ();
+		Vector3 newDirection = FindNewDirection (pManager.GetPillar());
 		beamThing = new Vector3 (transform.position.x, 0, transform.position.z);
 		direction = newDirection;
 		direction = ValidatePath (direction);

@@ -5,13 +5,23 @@ using UnityEngine;
 public class Movement : MonoBehaviour {
 
 	public float speed = 0.0f;
+	private float sprintSpeed;
+	private float walkSpeed;
 	// Use this for initialization
 	void Start () {
-		
+		walkSpeed = speed;
+		sprintSpeed = speed * 10;
 	}
 
 	// Update is called once per frame
 	void Update () {
+		if (Input.GetKey (KeyCode.LeftShift)) {
+			speed = sprintSpeed;
+		}
+		if (Input.GetKeyUp (KeyCode.LeftShift)) {
+			speed = walkSpeed;
+		}
+
 		if (Input.GetKey (KeyCode.W)) {
 			transform.Translate(Vector3.forward * speed * Time.deltaTime);
 		}

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Pillars : MonoBehaviour {
 
 	public List<Transform> patrolPositions;
+	public bool active = false;
 
 	void Awake()
 	{
@@ -48,8 +49,10 @@ public class Pillars : MonoBehaviour {
 	{
 		if (col.tag == "Player") {
 			gameObject.GetComponent<MeshRenderer> ().material.color = Color.red;
+			active = true;
 			foreach (Transform i in patrolPositions) {
 				i.GetComponent<MeshRenderer> ().material.color = Color.red;
+				i.GetComponent<Pillars> ().active = false;
 			}
 		}
 	}
@@ -58,9 +61,13 @@ public class Pillars : MonoBehaviour {
 	{
 		if (col.tag == "Player") {
 			gameObject.GetComponent<MeshRenderer> ().material.color = Color.black;
+
 			foreach (Transform i in patrolPositions) {
 				i.GetComponent<MeshRenderer> ().material.color = Color.black;
+
 			}
 		}
 	}
+
+
 }
