@@ -5,9 +5,11 @@ using UnityEngine;
 public class GrabThings : MonoBehaviour {
 
 	private Collider hand;
-	private Transform stuff;
+	private Transform throwable;
+	private Transform glyph;
 	private Rigidbody stuffs;
 	private bool canGrab = false;
+	private bool canDestroy = false;
 
 	// Use this for initialization
 	void Start () {
@@ -17,20 +19,24 @@ public class GrabThings : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (canGrab) {
-			if (Input.GetMouseButtonDown (0)) {
-				stuff.SetParent (transform);
+			if (Input.GetKeyDown (KeyCode.F)) {
+				throwable.SetParent (transform);
 				//stuffs.useGravity = false;
 				stuffs.isKinematic = true;
 				//stuffs.velocity = Vector3.zero;
 				//stuffs.angularVelocity = Vector3.zero;
-				stuff.gameObject.GetComponent<Noisemaker>().label = "Player";
-				stuff.gameObject.GetComponent<Noisemaker> ().thrower = transform;
+				throwable.gameObject.GetComponent<Noisemaker> ().label = "Player";
+				throwable.gameObject.GetComponent<Noisemaker> ().thrower = transform;
 			}
-			if (Input.GetMouseButtonDown (1)) {
-				stuff.SetParent (null);
+			if (Input.GetKeyDown (KeyCode.F)) {
+				throwable.SetParent (null);
 				//stuffs.useGravity = true;
 				stuffs.isKinematic = false;
 				stuffs.velocity = hand.transform.forward * 10;
+			}
+		} else if (canDestroy) {
+			if (Input.GetKeyDown (KeyCode.F)) {
+				Destroy (glyph.gameObject);
 			}
 		}
 	}
@@ -39,8 +45,11 @@ public class GrabThings : MonoBehaviour {
 	{
 		if (col.gameObject.tag == "Grabbable") {
 			canGrab = true;
-			stuff = col.transform;
+			throwable = col.transform;
 			stuffs = col.gameObject.GetComponent<Rigidbody> ();
+		} else if (col.gameObject.tag == "Glyph") {
+			canDestroy = true;
+			glyph = col.transform;
 		}
 	}
 
@@ -48,8 +57,15 @@ public class GrabThings : MonoBehaviour {
 	{
 		if (col.gameObject.tag == "Grabbable") {
 			canGrab = false;
-			stuff = null;
+			throwable = null;
 			stuffs = null;
+			if (col.gameObject.tag == "Glyph") {
+				canDestroy = true;
+				glyph = col.transform;
+			}
+		} else if (col.gameObject.tag == "Glyph") {
+			canDestroy = true;
+			glyph = col.transform;
 		}
 	}
 }

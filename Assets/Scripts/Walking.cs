@@ -21,6 +21,7 @@ public class Walking : MonoBehaviour {
 	private Vector3[] patrolLocations = new Vector3[3];
 
 	private float timer;
+	private int jumpCounter;
 	//private int counter = 0;
 	private NavMeshAgent nMA;
 	Vector3 direction;
@@ -29,6 +30,7 @@ public class Walking : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		timer = timerDelay;
+		jumpCounter = Random.Range (3, 11);
 		nMA = gameObject.GetComponent<NavMeshAgent> ();
 		patrolLocations [0] = patrol1;
 		patrolLocations [1] = patrol2;
@@ -42,10 +44,12 @@ public class Walking : MonoBehaviour {
 			Patrol ();
 		}
 		if (Input.GetKeyDown (KeyCode.J)) {
-			nMA.enabled = false;
-			Jump ();
-			nMA.enabled = true;
-			Patrol ();
+			if (!onCeiling) {
+				StartCoroutine(Jump (transform.position, new Vector3(transform.position.x, 14, transform.position.z)));
+			} else if (onCeiling) {
+				StartCoroutine(Jump (transform.position, new Vector3(transform.position.x, 0, transform.position.z)));
+			}
+
 		}
 		//Debug.Log (scanning);
 		if (Vector3.Distance (transform.position, direction) <= 1) {
@@ -93,15 +97,22 @@ public class Walking : MonoBehaviour {
 		return newDirection;
 	}
 
-	void Jump()
+	IEnumerator Jump(Vector3 startPos, Vector3 endPos)
 	{
-		if (!onCeiling) {
-			transform.position = new Vector3 (transform.position.x, 14, transform.position.z);
-			onCeiling = true;
-		} else {
-			transform.position = new Vector3 (transform.position.x, 1, transform.position.z);
-			onCeiling = false;
+		if (nMA.enabled) {
+			nMA.enabled = false;
 		}
+		float t = 0;
+		while (t < 1.0f) {
+			t += Time.deltaTime * 5;
+			transform.position = Vector3.Lerp (startPos, endPos, t);
+			transform.eulerAngles = Vector3.Lerp(transform.eulerAngles, new Vector3(180, transform.eulerAngles.y, transform.eulerAngles.z), t);
+			yield return null;
+		}
+		nMA.enabled = true;
+		onCeiling = !onCeiling;
+		yield return new WaitForSeconds (0.5f);
+		Patrol ();
 	}
 
 	Vector3 CheckDirection (Vector3 direction)
@@ -293,5 +304,15 @@ public class Walking : MonoBehaviour {
 		direction = ValidatePath (direction);
 		direction = CheckDirection (direction);
 		nMA.destination = direction;
+		jumpCounter--;
+		if (jumpCounter == 0)
+		{
+			if (!onCeiling) {
+				StartCoroutine(Jump (transform.position, new Vector3(transform.position.x, 14, transform.position.z)));
+			} else if (onCeiling) {
+				StartCoroutine(Jump (transform.position, new Vector3(transform.position.x, 0, transform.position.z)));
+			}
+			jumpCounter = Random.Range (3, 11);
+		}
 	}
 }

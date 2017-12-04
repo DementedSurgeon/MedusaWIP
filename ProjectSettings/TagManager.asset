@@ -8,6 +8,7 @@ TagManager:
   - Medusa
   - Terrain
   - PosPillars
+  - Glyph
   layers:
   - Default
   - TransparentFX
