@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Walking : MonoBehaviour {
+public class MedusaMovement : MonoBehaviour {
 
 	public float walkRadius;
 	public float scanRadius;
@@ -14,7 +14,6 @@ public class Walking : MonoBehaviour {
 	private bool onCeiling;
 	private float timer;
 	private int jumpCounter;
-	//private int counter = 0;
 	private NavMeshAgent nMA;
 	Vector3 direction;
 	Vector3 beamThing;

@@ -7,12 +7,13 @@ public class GlyphPlacer : MonoBehaviour {
 	public GameObject prefab;
 
 	public GameObject[] clusters;
+	public GameObject[] throwablesCluster;
 	public GameObject[] glyphSpots;
 	private GameObject[] glyphs;
 	private BoxCollider boxCollider;
 
-	// Use this for initialization
-	void Start () {
+	void Awake()
+	{
 		glyphSpots = new GameObject[clusters.Length];
 		glyphs = new GameObject[glyphSpots.Length];
 		for (int i = 0; i < clusters.Length; i++) {
@@ -39,11 +40,20 @@ public class GlyphPlacer : MonoBehaviour {
 				glyphs[i].transform.localScale.y / glyphSpots[i].transform.localScale.y, 
 				glyphs[i].transform.localScale.z / glyphSpots[i].transform.localScale.z);*/
 		}
+	}
+
+	// Use this for initialization
+	void Start () {
+
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
+	}
+
+	public GameObject[] GetGlyphs(){
+		return glyphs;
 	}
 }
