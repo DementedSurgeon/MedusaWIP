@@ -32,7 +32,8 @@ public class GlyphPlacer : MonoBehaviour {
 				glyphs [i].transform.localPosition = new Vector3 ((Random.Range (-glyphSpots [i].transform.localScale.x / 2, glyphSpots [i].transform.localScale.x / 2)) * glyphs [i].transform.localScale.x, (Random.Range (-glyphSpots [i].transform.localScale.y / 2, -glyphSpots [i].transform.localScale.y / 2 + 1)) * glyphs [i].transform.localScale.y, glyphs [i].transform.localPosition.z);
 			} else {
 				boxCollider = glyphSpots [i].GetComponent<BoxCollider> ();
-				glyphs [i].transform.localPosition = new Vector3 (0, 0, boxCollider.bounds.size.z/2);
+				Debug.Log (boxCollider.size.ToString(), boxCollider.gameObject);
+				glyphs [i].transform.localPosition = new Vector3 (0, 0, boxCollider.size.z/2);
 			}
 			/*glyphs[i].transform.localScale = new Vector3(glyphs[i].transform.localScale.x / glyphSpots[i].transform.localScale.x,
 				glyphs[i].transform.localScale.y / glyphSpots[i].transform.localScale.y, 
