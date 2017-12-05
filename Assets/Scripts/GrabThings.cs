@@ -28,7 +28,7 @@ public class GrabThings : MonoBehaviour {
 				throwable.gameObject.GetComponent<Noisemaker> ().label = "Player";
 				throwable.gameObject.GetComponent<Noisemaker> ().thrower = transform;
 			}
-			if (Input.GetKeyDown (KeyCode.F)) {
+			if (Input.GetKeyUp(KeyCode.F)) {
 				throwable.SetParent (null);
 				//stuffs.useGravity = true;
 				stuffs.isKinematic = false;
@@ -37,6 +37,7 @@ public class GrabThings : MonoBehaviour {
 		} else if (canDestroy) {
 			if (Input.GetKeyDown (KeyCode.F)) {
 				Destroy (glyph.gameObject);
+				glyph = null;
 			}
 		}
 	}

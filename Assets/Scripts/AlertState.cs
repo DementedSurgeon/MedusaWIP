@@ -11,6 +11,7 @@ public class AlertState : MonoBehaviour {
 	private float timer;
 	private Transform prey;
 	private int counter;
+	private bool investigating = false;
 
 	// Use this for initialization
 	void Start () {
@@ -21,12 +22,17 @@ public class AlertState : MonoBehaviour {
 	void Update () {
 		if (hunting) {
 			Hunt ();
+		} else if (investigating) {
+			Debug.Log (Vector3.Distance (transform.position, agent.destination));
+			if (Vector3.Distance (transform.position, agent.destination) <= 2) {
+				PreyCheck (agent.destination);
+			}
 		}
 	}
 
 	public void Alert(Transform alertCenter)
 	{
-		
+		investigating = true;
 		agent.destination = alertCenter.position;
 
 		if (alertCenter.transform.parent != null) {
@@ -58,5 +64,25 @@ public class AlertState : MonoBehaviour {
 		}
 	}
 
+	void PreyCheck(Vector3 place)
+	{
+		Debug.Log ("Checking for prey");
+		Collider[] cols = Physics.OverlapSphere (place, 2.5f);
+		for (int i = 0; i < cols.Length; i++)
+		{
+			if (cols [i].tag == "Grabbable") {
+				Anger (cols [i].gameObject.GetComponent<Rigidbody> ());
+				Debug.Log ("Venting anger");
+			} else if (cols[i].tag == "Player")
+			{
+				Debug.Log ("You dead, boy.");
+			}
+		}
+		investigating = false;
+	}
 
+	void Anger (Rigidbody target)
+	{
+		target.AddForce (transform.forward * 1000);
+	}
 }

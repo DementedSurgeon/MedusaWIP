@@ -10,16 +10,8 @@ public class Walking : MonoBehaviour {
 	public float timerDelay = 1.5f;
 	public Transform target;
 
-	public Vector3 patrol1;
-	public Vector3 patrol2;
-	public Vector3 patrol3;
-
 	public PillarManager pManager;
-
 	private bool onCeiling;
-
-	private Vector3[] patrolLocations = new Vector3[3];
-
 	private float timer;
 	private int jumpCounter;
 	//private int counter = 0;
@@ -32,9 +24,6 @@ public class Walking : MonoBehaviour {
 		timer = timerDelay;
 		jumpCounter = Random.Range (3, 11);
 		nMA = gameObject.GetComponent<NavMeshAgent> ();
-		patrolLocations [0] = patrol1;
-		patrolLocations [1] = patrol2;
-		patrolLocations [2] = patrol3;
 		beamThing = new Vector3 (transform.position.x, transform.position.y + 2, transform.position.z);
 	}
 	
@@ -75,7 +64,7 @@ public class Walking : MonoBehaviour {
 
 	Vector3 FindNewDirection(Transform newTransform)
 	{
-		Vector3 newDirection = newTransform.position + Random.onUnitSphere * 75f;
+		Vector3 newDirection = newTransform.position + Random.onUnitSphere * walkRadius;
 		NavMeshHit hit;
 		NavMesh.SamplePosition (new Vector3(newDirection.x,transform.position.y,newDirection.z), out hit, 1f, NavMesh.AllAreas);
 		for (int i = 0; i < 100; i++) {
@@ -99,6 +88,29 @@ public class Walking : MonoBehaviour {
 
 	IEnumerator Jump(Vector3 startPos, Vector3 endPos)
 	{
+		bool wait = false;
+		if (onCeiling) {
+			RaycastHit hit;
+			Collider[] cols;
+			if (Physics.Raycast (transform.position, Vector3.up * -1, out hit)) {
+				if (hit.transform.tag == "Player") {
+					wait = true;
+				} else {
+					cols = Physics.OverlapSphere (hit.point, scanRadius);
+					for (int i = 0; i < cols.Length; i++) {
+						if (cols [i].tag == "Player") {
+							wait = true;
+						}
+					}
+				}
+			}
+		}
+
+		if (wait) {
+			Debug.Log ("Waiting to jump");
+			yield return new WaitForSeconds (5.0f);
+		}
+
 		if (nMA.enabled) {
 			nMA.enabled = false;
 		}
