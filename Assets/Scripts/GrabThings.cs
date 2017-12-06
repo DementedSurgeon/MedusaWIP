@@ -5,6 +5,7 @@ using UnityEngine;
 public class GrabThings : MonoBehaviour {
 
 	private Collider hand;
+	public GlyphManager gManager;
 	private Transform throwable;
 	private Transform glyph;
 	private Rigidbody stuffs;
@@ -38,6 +39,7 @@ public class GrabThings : MonoBehaviour {
 			if (Input.GetKeyDown (KeyCode.F)) {
 				Destroy (glyph.gameObject);
 				glyph = null;
+				gManager.activeGlyph--;
 			}
 		}
 	}

@@ -60,10 +60,10 @@ public class Pillars : MonoBehaviour {
 	void OnTriggerExit(Collider col)
 	{
 		if (col.tag == "Player") {
-			gameObject.GetComponent<MeshRenderer> ().material.color = Color.black;
+			gameObject.GetComponent<MeshRenderer> ().material.color = Color.white;
 
 			foreach (Transform i in patrolPositions) {
-				i.GetComponent<MeshRenderer> ().material.color = Color.black;
+				i.GetComponent<MeshRenderer> ().material.color = Color.white;
 
 			}
 		}

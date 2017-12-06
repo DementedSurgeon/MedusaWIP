@@ -6,28 +6,49 @@ using UnityEngine.AI;
 public class AlertState : MonoBehaviour {
 
 	private NavMeshAgent agent;
+	private MedusaMovement medMovement;
 	private bool hunting = false;
 	private float huntTime = 5;
+	public float patrolTimeWait;
 	private float timer;
 	private Transform prey;
 	private int counter;
+	private bool patrolling = true;
 	private bool investigating = false;
 
+
+	void Awake()
+	{
+		agent = gameObject.GetComponent<NavMeshAgent> ();
+		medMovement = gameObject.GetComponent<MedusaMovement> ();
+
+	}
 	// Use this for initialization
 	void Start () {
-		agent = gameObject.GetComponent<NavMeshAgent> ();
+		medMovement.Patrol ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (hunting) {
-			Hunt ();
-		} else if (investigating) {
-			Debug.Log (Vector3.Distance (transform.position, agent.destination));
+		if (patrolling) {
+			if (Vector3.Distance(agent.destination, transform.position) <= 2)
+				{
+				medMovement.Patrol ();
+				}
+			
+		}
+		else if (investigating) {
+			//Debug.Log (Vector3.Distance (transform.position, agent.destination));
 			if (Vector3.Distance (transform.position, agent.destination) <= 2) {
 				PreyCheck (agent.destination);
 			}
 		}
+	}
+
+	IEnumerator PatrolWait()
+	{
+		yield return new WaitForSeconds (patrolTimeWait);
+		medMovement.Patrol ();
 	}
 
 	public void Alert(Transform alertCenter)
@@ -38,30 +59,29 @@ public class AlertState : MonoBehaviour {
 		if (alertCenter.transform.parent != null) {
 			if (alertCenter.transform.parent.tag == "Player") {
 				counter++;
+				Debug.Log ("Alerted");
 			}
 		}
 		if (counter >= 3) {
 			prey = alertCenter;
-			Hunt ();
+			StartCoroutine(Hunt ());
+			Debug.Log ("Hunting");
 			counter = 0;
 		}
 	}
 
-	void Hunt()
+	IEnumerator Hunt()
 	{
-		if (!hunting) {
-			hunting = true;
-			timer = huntTime;
-			agent.speed = 10;
-		} 
-		if (hunting) {
-			agent.destination = prey.position;
+		timer = huntTime;
+		agent.speed = 10;
+		while (timer > 0) 
+		{
 			timer -= Time.deltaTime;
-			if (timer <= 0) {
-				hunting = false;
-				agent.speed = 3.5f;
-			}
+			agent.destination = prey.position;
+			yield return null;
+
 		}
+		agent.speed = 3.5f;
 	}
 
 	void PreyCheck(Vector3 place)
@@ -81,8 +101,13 @@ public class AlertState : MonoBehaviour {
 		investigating = false;
 	}
 
-	void Anger (Rigidbody target)
+	public void Anger (Rigidbody target)
 	{
 		target.AddForce (transform.forward * 1000);
+	}
+
+	void Attack ()
+	{
+
 	}
 }

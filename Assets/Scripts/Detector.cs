@@ -6,6 +6,7 @@ public class Detector : MonoBehaviour {
 
 	public Transform target;
 	public GameObject mirror;
+	public GlyphManager gManager;
 	private MeshRenderer upCube;
 	private MeshRenderer upRightCube;
 	private MeshRenderer rightCube;
@@ -17,6 +18,7 @@ public class Detector : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		
 		upCube = mirror.transform.Find ("upCube").GetComponent<MeshRenderer> ();
 		upRightCube = mirror.transform.Find ("upRightCube").GetComponent<MeshRenderer> ();
 		rightCube = mirror.transform.Find ("rightCube").GetComponent<MeshRenderer> ();
@@ -29,6 +31,7 @@ public class Detector : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		target = gManager.GetActiveGlyph ();
 		Vector3 targetDir = target.position - transform.position;
 		float up = Vector3.Angle(targetDir, transform.forward);
 		Vector3 vupRight = Quaternion.Euler (0, 45, 0) * transform.forward;

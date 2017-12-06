@@ -5,67 +5,48 @@ using UnityEngine.AI;
 
 public class MedusaMovement : MonoBehaviour {
 
+	private AlertState medBehaviour;
+
 	public float walkRadius;
 	public float scanRadius;
-	public float timerDelay = 1.5f;
 	public Transform target;
 
 	public PillarManager pManager;
-	private bool onCeiling;
-	private float timer;
-	private int jumpCounter;
-	private NavMeshAgent nMA;
-	Vector3 direction;
+	public bool onCeiling;
+	public int jumpCounter;
+	public NavMeshAgent nMA;
+	public Vector3 direction;
 	Vector3 beamThing;
+
+	void Awake()
+	{
+		jumpCounter = Random.Range (3, 11);
+		nMA = gameObject.GetComponent<NavMeshAgent> ();
+		medBehaviour = gameObject.GetComponent<AlertState> ();
+		beamThing = new Vector3 (transform.position.x, transform.position.y + 2, transform.position.z);
+	}
 
 	// Use this for initialization
 	void Start () {
-		timer = timerDelay;
-		jumpCounter = Random.Range (3, 11);
-		nMA = gameObject.GetComponent<NavMeshAgent> ();
-		beamThing = new Vector3 (transform.position.x, transform.position.y + 2, transform.position.z);
+		
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown (KeyCode.C)) {
-			Patrol ();
-		}
-		if (Input.GetKeyDown (KeyCode.J)) {
-			if (!onCeiling) {
-				StartCoroutine(Jump (transform.position, new Vector3(transform.position.x, 14, transform.position.z)));
-			} else if (onCeiling) {
-				StartCoroutine(Jump (transform.position, new Vector3(transform.position.x, 0, transform.position.z)));
-			}
 
-		}
-		//Debug.Log (scanning);
-		if (Vector3.Distance (transform.position, direction) <= 1) {
-			if (timer > 0) {
-				timer -= Time.deltaTime;
-				if (timer <= 0) {
-					Patrol ();
-					timer = timerDelay;
-				}
-			}
-		}
 	}
 
 	void OnCollisionEnter (Collision col)
 	{
 		Debug.Log ("Collision");
-		GameObject impact;
-		impact = col.gameObject;
-		if (impact.GetComponent<NavMeshObstacle> ().enabled == false) {
-			impact.gameObject.GetComponent<Rigidbody> ().AddForce (nMA.destination * 100);
-		}
+		medBehaviour.Anger (col.gameObject.GetComponent<Rigidbody> ());
 	}
 
 	Vector3 FindNewDirection(Transform newTransform)
 	{
 		Vector3 newDirection = newTransform.position + Random.onUnitSphere * walkRadius;
 		NavMeshHit hit;
-		NavMesh.SamplePosition (new Vector3(newDirection.x,transform.position.y,newDirection.z), out hit, 1f, NavMesh.AllAreas);
+		NavMesh.SamplePosition (new Vector3(newDirection.x,0,newDirection.z), out hit, 1f, NavMesh.AllAreas);
 		for (int i = 0; i < 100; i++) {
 			if (Vector3.Distance (transform.position, hit.position) >= 5.0f) {
 				i = 100;
@@ -307,13 +288,15 @@ public class MedusaMovement : MonoBehaviour {
 		}
 	}
 
-	void Patrol()
+	public void Patrol()
 	{
 		Vector3 newDirection = FindNewDirection (pManager.GetPillar());
 		beamThing = new Vector3 (transform.position.x, 0, transform.position.z);
 		direction = newDirection;
 		direction = ValidatePath (direction);
 		direction = CheckDirection (direction);
+		Debug.Log (direction);
+		Debug.Log (jumpCounter);
 		nMA.destination = direction;
 		jumpCounter--;
 		if (jumpCounter == 0)
