@@ -46,51 +46,62 @@ public class Detector : MonoBehaviour {
 		Vector3 vupLeft = Quaternion.Euler (0, 45, 0) * (transform.right * -1);
 		float upLeft = Vector3.Angle (targetDir, vupLeft);
 
-		if (up <= 22.5f) {
-			upCube.material.color = Color.red;
+		if (Vector3.Distance (transform.position, target.position) > 20) {
+			if (up <= 22.5f) {
+				upCube.material.color = Color.red;
+			} else {
+				upCube.material.color = Color.black;
+			}
+
+			if (upRight <= 22.5f) {
+				upRightCube.material.color = Color.red;
+			} else {
+				upRightCube.material.color = Color.black;
+			}
+
+			if (right <= 22.5f) {
+				rightCube.material.color = Color.red;
+			} else {
+				rightCube.material.color = Color.black;
+			}
+
+			if (downRight <= 22.5f) {
+				downRightCube.material.color = Color.red;
+			} else {
+				downRightCube.material.color = Color.black;
+			}
+
+			if (down <= 22.5f) {
+				downCube.material.color = Color.red;
+			} else {
+				downCube.material.color = Color.black;
+			}
+
+			if (downLeft <= 22.5f) {
+				downLeftCube.material.color = Color.red;
+			} else {
+				downLeftCube.material.color = Color.black;
+			}
+
+			if (left <= 22.5f) {
+				leftCube.material.color = Color.red;
+			} else {
+				leftCube.material.color = Color.black;
+			}
+
+			if (upLeft <= 22.5f) {
+				upLeftCube.material.color = Color.red;
+			} else {
+				upLeftCube.material.color = Color.black;
+			}
 		} else {
 			upCube.material.color = Color.black;
-		}
-
-		if (upRight <= 22.5f) {
-			upRightCube.material.color = Color.red;
-		} else {
 			upRightCube.material.color = Color.black;
-		}
-
-		if (right <= 22.5f) {
-			rightCube.material.color = Color.red;
-		} else {
 			rightCube.material.color = Color.black;
-		}
-
-		if (downRight <= 22.5f) {
-			downRightCube.material.color = Color.red;
-		} else {
 			downRightCube.material.color = Color.black;
-		}
-
-		if (down <= 22.5f) {
-			downCube.material.color = Color.red;
-		} else {
 			downCube.material.color = Color.black;
-		}
-
-		if (downLeft <= 22.5f) {
-			downLeftCube.material.color = Color.red;
-		} else {
 			downLeftCube.material.color = Color.black;
-		}
-
-		if (left <= 22.5f) {
-			leftCube.material.color = Color.red;
-		} else {
 			leftCube.material.color = Color.black;
-		}
-
-		if (upLeft <= 22.5f) {
-			upLeftCube.material.color = Color.red;
-		} else {
 			upLeftCube.material.color = Color.black;
 		}
 			

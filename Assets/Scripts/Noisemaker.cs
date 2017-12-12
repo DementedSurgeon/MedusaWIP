@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Noisemaker : MonoBehaviour {
 
+	private AudioSource aSource;
 	private Rigidbody rBody;
 	private Collider[] cols;
 	public string label = "None";
@@ -12,6 +13,7 @@ public class Noisemaker : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rBody = gameObject.GetComponent<Rigidbody> ();
+		aSource = gameObject.GetComponent<AudioSource> ();
 	}
 	
 	// Update is called once per frame
@@ -31,12 +33,13 @@ public class Noisemaker : MonoBehaviour {
 						cols [i].GetComponent<AlertState> ().Alert (transform);
 					}
 				}
-
+				aSource.Play ();
 			}
 		} else if (col.gameObject.tag == "Medusa" && label == "Player") {
 			col.gameObject.GetComponent<AlertState> ().Alert (thrower);
 			label = "None";
 		}
+
 	}
 
 }

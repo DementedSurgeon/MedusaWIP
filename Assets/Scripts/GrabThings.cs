@@ -5,12 +5,18 @@ using UnityEngine;
 public class GrabThings : MonoBehaviour {
 
 	private Collider hand;
+	public GameObject shard;
 	public GlyphManager gManager;
 	private Transform throwable;
 	private Transform glyph;
+	private GameObject floorShard;
+	private Door door;
 	private Rigidbody stuffs;
+	private bool grabbed = false;
 	private bool canGrab = false;
 	private bool canDestroy = false;
+	private bool canEquip = false;
+	private bool canOpen = false;
 
 	// Use this for initialization
 	void Start () {
@@ -20,28 +26,53 @@ public class GrabThings : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (canGrab) {
-			if (Input.GetKeyDown (KeyCode.F)) {
-				throwable.SetParent (transform);
-				//stuffs.useGravity = false;
-				stuffs.isKinematic = true;
-				//stuffs.velocity = Vector3.zero;
-				//stuffs.angularVelocity = Vector3.zero;
-				throwable.gameObject.GetComponent<Noisemaker> ().label = "Player";
-				throwable.gameObject.GetComponent<Noisemaker> ().thrower = transform;
+			if (!grabbed) {
+				if (Input.GetKeyDown (KeyCode.F)) {
+					throwable.SetParent (transform);
+					//stuffs.useGravity = false;
+					stuffs.isKinematic = true;
+					grabbed = true;
+					//stuffs.velocity = Vector3.zero;
+					//stuffs.angularVelocity = Vector3.zero;
+					throwable.gameObject.GetComponent<Noisemaker> ().label = "Player";
+					throwable.gameObject.GetComponent<Noisemaker> ().thrower = transform;
+				}
+			} else if (grabbed) {
+				if (Input.GetKeyDown (KeyCode.F)) {
+					throwable.SetParent (null);
+					//stuffs.useGravity = true;
+					stuffs.isKinematic = false;
+					grabbed = false;
+				}
+				if (Input.GetMouseButtonDown (0)) {
+					throwable.SetParent (null);
+					//stuffs.useGravity = true;
+					stuffs.isKinematic = false;
+					stuffs.velocity = hand.transform.forward * 10;
+					grabbed = false;
+				}
 			}
-			if (Input.GetKeyUp(KeyCode.F)) {
-				throwable.SetParent (null);
-				//stuffs.useGravity = true;
-				stuffs.isKinematic = false;
-				stuffs.velocity = hand.transform.forward * 10;
-			}
-		} else if (canDestroy) {
+		} 
+		if (canDestroy) {
 			if (Input.GetKeyDown (KeyCode.F)) {
-				Destroy (glyph.gameObject);
+				glyph.gameObject.SetActive (false);
+				canDestroy = false;
 				glyph = null;
-				gManager.activeGlyph--;
+				GlyphManager.activeGlyph--;
 			}
 		}
+		if (canEquip) {
+			if (Input.GetKeyDown (KeyCode.F)) {
+				shard.gameObject.SetActive (true);
+				floorShard.SetActive (false);
+			}
+		}
+		if (canOpen) {
+			if (Input.GetKeyDown (KeyCode.F)) {
+				door.InteractWithDoor ();
+			}
+		}
+
 	}
 
 	void OnTriggerStay (Collider col)
@@ -50,9 +81,18 @@ public class GrabThings : MonoBehaviour {
 			canGrab = true;
 			throwable = col.transform;
 			stuffs = col.gameObject.GetComponent<Rigidbody> ();
-		} else if (col.gameObject.tag == "Glyph") {
+		} 
+		if (col.gameObject.tag == "Glyph") {
 			canDestroy = true;
 			glyph = col.transform;
+		}
+		if (col.gameObject.tag == "Shard") {
+			canEquip = true;
+			floorShard = col.gameObject;
+		}
+		if (col.gameObject.tag == "Door") {
+			canOpen = true;
+			door = col.gameObject.GetComponent<Door> ();
 		}
 	}
 
@@ -66,9 +106,34 @@ public class GrabThings : MonoBehaviour {
 				canDestroy = true;
 				glyph = col.transform;
 			}
-		} else if (col.gameObject.tag == "Glyph") {
+		}
+		if (col.gameObject.tag == "Glyph") {
 			canDestroy = true;
 			glyph = col.transform;
 		}
+		if (col.gameObject.tag == "Shard") {
+			canEquip = false;
+			floorShard = null;
+		}
+
+		if (col.gameObject.tag == "Door") {
+			canOpen = false;
+			door = null;
+		}
+	}
+
+	public bool GetCurrentThrowable()
+	{
+		return grabbed;
+	}
+
+	public bool CanGrabShard()
+	{
+		return canEquip;
+	}
+
+	public bool CanOpenDoor()
+	{
+		return canOpen;
 	}
 }

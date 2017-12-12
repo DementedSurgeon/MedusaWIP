@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 11aba95247719c34a955b636ab6b2010
+timeCreated: 1512749896
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Something in the way
+  fontNames:
+  - Something in the way
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

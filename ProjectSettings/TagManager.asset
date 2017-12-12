@@ -9,6 +9,8 @@ TagManager:
   - Terrain
   - PosPillars
   - Glyph
+  - Shard
+  - Door
   layers:
   - Default
   - TransparentFX
@@ -19,8 +21,8 @@ TagManager:
   - 
   - 
   - PlayerCol
-  - 
-  - 
+  - TerrainCol
+  - ShardLayer
   - 
   - 
   - 

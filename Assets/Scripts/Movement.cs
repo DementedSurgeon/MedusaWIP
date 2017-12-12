@@ -5,16 +5,48 @@ using UnityEngine;
 public class Movement : MonoBehaviour {
 
 	public float speed = 0.0f;
-	private float sprintSpeed;
-	private float walkSpeed;
+	public float sprintSpeed;
+	public float walkSpeed;
+	public float crouchSpeed;
+	private Rigidbody rBody;
+	private bool moving = false;
+	private float timer = 0;
+	private AudioSource aSource;
+	private Collider[] cols;
 	// Use this for initialization
 	void Start () {
 		walkSpeed = speed;
-		sprintSpeed = speed * 10;
+		sprintSpeed = speed * 2;
+		crouchSpeed = speed / 2;
+		rBody = gameObject.GetComponent<Rigidbody> ();
+		aSource = gameObject.GetComponent<AudioSource> ();
 	}
 
 	// Update is called once per frame
 	void Update () {
+		if (moving) {
+			if (!aSource.isPlaying) {
+				aSource.Play ();
+			}
+			if (timer <= 0) {
+				cols = Physics.OverlapSphere (transform.position, 1 * speed);
+				for (int i = 0; i < cols.Length; i++) {
+					if (cols [i].gameObject.tag == "Medusa") {
+						cols [i].GetComponent<AlertState> ().Alert (transform);
+					}
+					Debug.Log ("Step");
+					timer = 6 / speed;
+				}
+			} else {
+				Debug.Log ("Not Step");
+				timer -= Time.deltaTime;
+			}
+		} else if (!moving) {
+			if (aSource.isPlaying) {
+				aSource.Stop ();
+			}
+		}
+
 		if (Input.GetKey (KeyCode.LeftShift)) {
 			speed = sprintSpeed;
 		}
@@ -22,17 +54,54 @@ public class Movement : MonoBehaviour {
 			speed = walkSpeed;
 		}
 
+		if (Input.GetKeyDown (KeyCode.LeftControl)) {
+			speed = crouchSpeed;
+			for (int i = 0; i < gameObject.transform.childCount; i++) {
+				gameObject.transform.GetChild (i).transform.localPosition = new Vector3 (gameObject.transform.GetChild (i).transform.localPosition.x, gameObject.transform.GetChild (i).transform.localPosition.y / 2, gameObject.transform.GetChild (i).transform.localPosition.z);
+			}
+		}
+		if (Input.GetKeyUp (KeyCode.LeftControl)) {
+			speed = walkSpeed;
+			for (int i = 0; i < gameObject.transform.childCount; i++) {
+				gameObject.transform.GetChild (i).transform.localPosition = new Vector3 (gameObject.transform.GetChild (i).transform.localPosition.x, gameObject.transform.GetChild (i).transform.localPosition.y * 2, gameObject.transform.GetChild (i).transform.localPosition.z);
+			}
+		}
+
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			rBody.AddForce (Vector3.up * 500);
+		}
+
 		if (Input.GetKey (KeyCode.W)) {
-			transform.Translate(Vector3.forward * speed * Time.deltaTime);
+			rBody.velocity = new Vector3 (transform.forward.x * speed, rBody.velocity.y, transform.forward.z * speed);
+			moving = true;
 		}
 		if (Input.GetKey (KeyCode.A)) {
-			transform.Translate(Vector3.left * speed * Time.deltaTime);
+			rBody.velocity = transform.right * -speed;
+			moving = true;
 		}
 		if (Input.GetKey (KeyCode.S)) {
-			transform.Translate(Vector3.back * speed * Time.deltaTime);
+			rBody.velocity = transform.forward * -speed;
+			moving = true;
 		}
 		if (Input.GetKey (KeyCode.D)) {
-			transform.Translate(Vector3.right * speed * Time.deltaTime);
+			rBody.velocity = new Vector3 (transform.right.x * speed, rBody.velocity.y, transform.right.z * speed);
+			moving = true;
+		}
+		if (Input.GetKeyUp (KeyCode.W)) {
+			rBody.velocity = new Vector3 (0, rBody.velocity.y, 0);
+			moving = false;
+		}
+		if (Input.GetKeyUp (KeyCode.A)) {
+			rBody.velocity = new Vector3 (0, rBody.velocity.y, 0);
+			moving = false;
+		}
+		if (Input.GetKeyUp (KeyCode.S)) {
+			rBody.velocity = new Vector3 (0, rBody.velocity.y, 0);
+			moving = false;
+		}
+		if (Input.GetKeyUp (KeyCode.D)) {
+			rBody.velocity = new Vector3 (0, rBody.velocity.y, 0);
+			moving = false;
 		}
 	}
 }

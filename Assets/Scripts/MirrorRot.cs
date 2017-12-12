@@ -29,7 +29,7 @@ public class MirrorRot : MonoBehaviour {
 			angled = true;
 		} 
 		if (camM.transform.localEulerAngles.x < 30 && angled) {
-			StartCoroutine (Turn(transform.localEulerAngles, new Vector3(0, transform.localEulerAngles.y, transform.localEulerAngles.z)));
+			StartCoroutine (Turn(transform.localEulerAngles, new Vector3(360, transform.localEulerAngles.y, transform.localEulerAngles.z)));
 			angled = false;
 		}
 

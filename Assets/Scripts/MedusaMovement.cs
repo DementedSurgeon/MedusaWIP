@@ -12,17 +12,16 @@ public class MedusaMovement : MonoBehaviour {
 	public Transform target;
 
 	public PillarManager pManager;
-	public bool onCeiling;
-	public int jumpCounter;
 	public NavMeshAgent nMA;
 	public Vector3 direction;
 	Vector3 beamThing;
+	private MedusaSounds medSounds;
 
 	void Awake()
 	{
-		jumpCounter = Random.Range (3, 11);
 		nMA = gameObject.GetComponent<NavMeshAgent> ();
 		medBehaviour = gameObject.GetComponent<AlertState> ();
+		medSounds = gameObject.GetComponent<MedusaSounds> ();
 		beamThing = new Vector3 (transform.position.x, transform.position.y + 2, transform.position.z);
 	}
 
@@ -66,17 +65,24 @@ public class MedusaMovement : MonoBehaviour {
 		return newDirection;
 	}
 
-	IEnumerator Jump(Vector3 startPos, Vector3 endPos)
+	public IEnumerator Jump(Vector3 startPos, bool onRoof)
 	{
+		Vector3 jumpPoint;
+		if (!onRoof) {
+			jumpPoint = new Vector3 (transform.position.x, 14, transform.position.z);
+		} else {
+			jumpPoint = new Vector3 (transform.position.x, 0, transform.position.z);
+		}
 		bool wait = false;
-		if (onCeiling) {
+		if (onRoof) {
+			Debug.Log ("Checking below");
 			RaycastHit hit;
 			Collider[] cols;
-			if (Physics.Raycast (transform.position, Vector3.up * -1, out hit)) {
+			if (Physics.Raycast (transform.position, transform.up * -1, out hit)) {
 				if (hit.transform.tag == "Player") {
 					wait = true;
 				} else {
-					cols = Physics.OverlapSphere (hit.point, scanRadius);
+					cols = Physics.OverlapSphere (new Vector3(transform.position.x, 0, transform.position.z), scanRadius);
 					for (int i = 0; i < cols.Length; i++) {
 						if (cols [i].tag == "Player") {
 							wait = true;
@@ -88,6 +94,7 @@ public class MedusaMovement : MonoBehaviour {
 
 		if (wait) {
 			Debug.Log ("Waiting to jump");
+			medSounds.PlayTrack (2);
 			yield return new WaitForSeconds (5.0f);
 		}
 
@@ -97,12 +104,11 @@ public class MedusaMovement : MonoBehaviour {
 		float t = 0;
 		while (t < 1.0f) {
 			t += Time.deltaTime * 5;
-			transform.position = Vector3.Lerp (startPos, endPos, t);
+			transform.position = Vector3.Lerp (startPos, jumpPoint, t);
 			transform.eulerAngles = Vector3.Lerp(transform.eulerAngles, new Vector3(180, transform.eulerAngles.y, transform.eulerAngles.z), t);
 			yield return null;
 		}
 		nMA.enabled = true;
-		onCeiling = !onCeiling;
 		yield return new WaitForSeconds (0.5f);
 		Patrol ();
 	}
@@ -295,18 +301,6 @@ public class MedusaMovement : MonoBehaviour {
 		direction = newDirection;
 		direction = ValidatePath (direction);
 		direction = CheckDirection (direction);
-		Debug.Log (direction);
-		Debug.Log (jumpCounter);
 		nMA.destination = direction;
-		jumpCounter--;
-		if (jumpCounter == 0)
-		{
-			if (!onCeiling) {
-				StartCoroutine(Jump (transform.position, new Vector3(transform.position.x, 14, transform.position.z)));
-			} else if (onCeiling) {
-				StartCoroutine(Jump (transform.position, new Vector3(transform.position.x, 0, transform.position.z)));
-			}
-			jumpCounter = Random.Range (3, 11);
-		}
 	}
 }
