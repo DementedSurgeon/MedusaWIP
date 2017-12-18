@@ -93,27 +93,36 @@ public class UIManager : MonoBehaviour {
 				tWiggle.SetNewText (text.text);
 			}
 		} else if (throwables [closest].tag == "Door") {
-			if (!throwables [closest].gameObject.GetComponent<Door> ().isOpen) {
-				if (handExtra.CanOpenDoor ()) {
-					text.text = "F OPEN";
-					tWiggle.SetNewText (text.text);
-				} else {
-					text.text = " ";
-					tWiggle.SetNewText (text.text);
-				}
-			}
-				else if (throwables [closest].gameObject.GetComponent<Door>().isOpen) {
-					if (handExtra.CanOpenDoor()) {
+			if (!throwables [closest].gameObject.GetComponent<Door> ().isLocked) {
+				if (!throwables [closest].gameObject.GetComponent<Door> ().isOpen) {
+					if (handExtra.CanOpenDoor ()) {
+						text.text = "F OPEN";
+						tWiggle.SetNewText (text.text);
+					} else {
+						text.text = " ";
+						tWiggle.SetNewText (text.text);
+					}
+				} else if (throwables [closest].gameObject.GetComponent<Door> ().isOpen) {
+					if (handExtra.CanOpenDoor ()) {
 						text.text = "F CLOSE";
 						tWiggle.SetNewText (text.text);
 					} else {
 						text.text = " ";
 						tWiggle.SetNewText (text.text);
 					}
-	}
+				}
+			} else if (throwables [closest].gameObject.GetComponent<Door> ().isLocked) {
+				if (handExtra.CanOpenDoor ()) {
+					text.text = "LOCKED";
+					tWiggle.SetNewText (text.text);
+				} else {
+					text.text = " ";
+					tWiggle.SetNewText (text.text);
+				}
+			}
 
 
-}
+		}
 	}
 
 }

@@ -33,4 +33,13 @@ public class PlayerHealth : MonoBehaviour {
 	{
 		Debug.Log ("Player is dead");
 	}
+
+	public bool IsAlive()
+	{
+		if (health > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

@@ -31,7 +31,11 @@ public class Detector : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		target = gManager.GetActiveGlyph ();
+		if (GlyphManager.activeGlyph >= 0) {
+			target = gManager.GetActiveGlyph ();
+		} else {
+			this.enabled = false;
+		}
 		Vector3 targetDir = target.position - transform.position;
 		float up = Vector3.Angle(targetDir, transform.forward);
 		Vector3 vupRight = Quaternion.Euler (0, 45, 0) * transform.forward;

@@ -5,6 +5,8 @@ using UnityEngine;
 public class WinnerCircle : MonoBehaviour {
 
 	public bool isActive;
+	public delegate void MyDelegate ();
+	public MyDelegate OnArrival;
 
 	// Use this for initialization
 	void Start () {
@@ -19,7 +21,9 @@ public class WinnerCircle : MonoBehaviour {
 	void OnCollisionEnter (Collision col)
 	{
 		if (col.gameObject.tag == "Player" && isActive) {
-			Debug.Log ("You win!");
+			if (OnArrival != null) {
+				OnArrival ();
+			}
 		}
 	}
 }

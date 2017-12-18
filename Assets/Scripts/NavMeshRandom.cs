@@ -20,7 +20,6 @@ public class NavMeshRandom : MonoBehaviour {
 
 	void Patrol()
 	{
-		Debug.Log ("Works");
 		Vector3 result;
 		Vector3 randomPoint = transform.position + Random.insideUnitSphere * 10;
 		NavMeshHit hit;

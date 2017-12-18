@@ -115,7 +115,6 @@ public class AlertState : MonoBehaviour {
 		agent.acceleration = 20;
 		while (timer > 0) 
 		{
-			Debug.Log ("Hunting");
 			timer -= Time.deltaTime;
 			agent.destination = prey.position;
 			yield return null;

@@ -34,17 +34,23 @@ public class Movement : MonoBehaviour {
 					if (cols [i].gameObject.tag == "Medusa") {
 						cols [i].GetComponent<AlertState> ().Alert (transform);
 					}
-					Debug.Log ("Step");
 					timer = 6 / speed;
 				}
 			} else {
-				Debug.Log ("Not Step");
 				timer -= Time.deltaTime;
 			}
 		} else if (!moving) {
 			if (aSource.isPlaying) {
 				aSource.Stop ();
 			}
+		}
+
+		float amountAD = Input.GetAxis ("Horizontal");
+		float amountWS = Input.GetAxis ("Vertical");
+		Vector3 movement = ((transform.right * amountAD) + (transform.forward * amountWS)) * speed;
+		rBody.velocity = new Vector3 (movement.x, rBody.velocity.y, movement.z);
+		if (amountAD == 0 && amountWS == 0) {
+			rBody.velocity = new Vector3 (0, rBody.velocity.y, 0);
 		}
 
 		if (Input.GetKey (KeyCode.LeftShift)) {
@@ -71,10 +77,11 @@ public class Movement : MonoBehaviour {
 			rBody.AddForce (Vector3.up * 500);
 		}
 
-		if (Input.GetKey (KeyCode.W)) {
+		/*if (Input.GetKey (KeyCode.W)) {
 			rBody.velocity = new Vector3 (transform.forward.x * speed, rBody.velocity.y, transform.forward.z * speed);
 			moving = true;
 		}
+
 		if (Input.GetKey (KeyCode.A)) {
 			rBody.velocity = transform.right * -speed;
 			moving = true;
@@ -102,6 +109,6 @@ public class Movement : MonoBehaviour {
 		if (Input.GetKeyUp (KeyCode.D)) {
 			rBody.velocity = new Vector3 (0, rBody.velocity.y, 0);
 			moving = false;
-		}
+		}*/
 	}
 }

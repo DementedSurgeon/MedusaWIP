@@ -6,7 +6,6 @@ public class Door : MonoBehaviour {
 
 	public bool isOpen = false;
 	public bool isLocked = false;
-	public GameObject medusa;
 
 	// Use this for initialization
 	void Start () {
@@ -31,13 +30,13 @@ public class Door : MonoBehaviour {
 			yield return null;
 		}
 		isOpen = !isOpen;
-		if (!medusa.activeSelf) {
-			medusa.SetActive (true);
-		}
+
 	}
 
 	public void InteractWithDoor()
 	{
-		StartCoroutine (OpenClose ());
+		if (!isLocked) {
+			StartCoroutine (OpenClose ());
+		}
 	}
 }

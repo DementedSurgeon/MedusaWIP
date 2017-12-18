@@ -14,6 +14,7 @@ public class MenuUIManager : MonoBehaviour {
 	private Text text;
 	public Camera toLookAt;
 	private TextWiggle tWiggle;
+	public Text credits;
 
 	// Use this for initialization
 	void Start () {
@@ -45,12 +46,18 @@ public class MenuUIManager : MonoBehaviour {
 		if (text.text.ToLower() != buttons [closest].name.ToLower()) {
 			text.text = buttons [closest].name;
 			tWiggle.SetNewText (buttons [closest].name);
+			if (buttons [closest].name != "CREDITS") {
+				credits.gameObject.SetActive (false);
+			}
 		}
 		if (Input.GetMouseButtonDown (0)) {
 			if (closest == 0) {
 				SceneManager.LoadScene ("Test");
 			} else if (closest == 1) {
-				Debug.Log ("Options Works");
+				if (!credits.gameObject.activeSelf) {
+					credits.gameObject.SetActive (true);
+					Debug.Log ("Credits");
+				}
 			} else if (closest == 2) {
 				Application.Quit ();
 			}

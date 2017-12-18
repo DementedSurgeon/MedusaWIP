@@ -8,19 +8,21 @@ public class GlyphManager : MonoBehaviour {
 	public GameObject[] glyphs;
 	public int totalGlyphs;
 	public static int activeGlyph;
+	public delegate void MyDelegate ();
+	public MyDelegate onGlyphsDestroyed;
 
 	// Use this for initialization
 	void Start () {
 		glyphs = glyphPlacer.GetGlyphs ();
 		totalGlyphs = glyphs.Length;
 		activeGlyph = totalGlyphs - 1;
+		onGlyphsDestroyed += FinishUp;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (activeGlyph == -1) {
-			activeGlyph = 0;
-			Debug.Log ("You win!");
+		if (activeGlyph < 0) {
+			onGlyphsDestroyed ();
 		}
 	}
 
@@ -36,5 +38,10 @@ public class GlyphManager : MonoBehaviour {
 	public GameObject[] GetGlyphs()
 	{
 		return glyphs;
+	}
+
+	void FinishUp()
+	{
+		gameObject.SetActive (false);
 	}
 }

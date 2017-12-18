@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class VolumeFinder : MonoBehaviour {
-
+	/*
 	private BoxCollider bCollider;
 	private Vector3 upRight;
 	private Vector3 downRight;
@@ -33,5 +33,5 @@ public class VolumeFinder : MonoBehaviour {
 
 		downLeft.x -= bCollider.size.x / 2;
 		downLeft.z -= bCollider.size.z / 2;
-	}
+	}*/
 }
