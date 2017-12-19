@@ -6349,7 +6349,7 @@ GameObject:
   - component: {fileID: 559909482}
   - component: {fileID: 559909481}
   - component: {fileID: 559909483}
-  m_Layer: 10
+  m_Layer: 5
   m_Name: Text (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9993,7 +9993,7 @@ GameObject:
   - component: {fileID: 1366239128}
   - component: {fileID: 1366239127}
   - component: {fileID: 1366239129}
-  m_Layer: 10
+  m_Layer: 5
   m_Name: Text (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11434,6 +11434,7 @@ MonoBehaviour:
   floorShard: {fileID: 420901888}
   victoryText: {fileID: 1244968113}
   defeatText: {fileID: 675854713}
+  buttons: {fileID: 1873325839}
 --- !u!65 &1578077178
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11472,7 +11473,7 @@ GameObject:
   - component: {fileID: 1581958546}
   - component: {fileID: 1581958548}
   - component: {fileID: 1581958547}
-  m_Layer: 10
+  m_Layer: 5
   m_Name: Text (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

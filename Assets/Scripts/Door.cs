@@ -55,5 +55,7 @@ public class Door : MonoBehaviour {
 	public void LockUnlockDoor()
 	{
 		isLocked = !isLocked;
+		aSource.clip = doorSounds [2];
+		aSource.Play();
 	}
 }

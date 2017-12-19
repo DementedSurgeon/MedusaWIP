@@ -14,6 +14,7 @@ public class GameFlow : MonoBehaviour {
 	public FloorShard floorShard;
 	public Text victoryText;
 	public Text defeatText;
+	public GameObject buttons;
 
 	// Use this for initialization
 	void Start () {
@@ -40,11 +41,13 @@ public class GameFlow : MonoBehaviour {
 			Debug.Log ("You lose!");
 			defeatText.gameObject.SetActive (true);
 		}
+		buttons.SetActive (true);
+		Cursor.lockState = CursorLockMode.None;
 	}
 
 	void UnlockDoor()
 	{
-		door.isLocked = false;
+		door.LockUnlockDoor ();
 	}
 
 	void ExitOpen()

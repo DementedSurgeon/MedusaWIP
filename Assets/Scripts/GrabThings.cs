@@ -65,6 +65,7 @@ public class GrabThings : MonoBehaviour {
 			if (Input.GetKeyDown (KeyCode.F)) {
 				shard.gameObject.SetActive (true);
 				floorShard.Equip ();
+				canEquip = false;
 			}
 		}
 		if (canOpen) {
