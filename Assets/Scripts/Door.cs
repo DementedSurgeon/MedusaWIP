@@ -5,11 +5,13 @@ using UnityEngine;
 public class Door : MonoBehaviour {
 
 	public bool isOpen = false;
-	public bool isLocked = false;
+	public bool isLocked = true;
+	public AudioClip[] doorSounds;
+	private AudioSource aSource;
 
 	// Use this for initialization
 	void Start () {
-		
+		aSource = gameObject.GetComponent<AudioSource> ();
 	}
 	
 	// Update is called once per frame
@@ -19,6 +21,13 @@ public class Door : MonoBehaviour {
 
 	IEnumerator OpenClose()
 	{
+		if (!isOpen) {
+			aSource.clip = doorSounds [0];
+			aSource.Play();
+		} else if (isOpen) {
+			aSource.clip = doorSounds [1];
+			aSource.Play();
+		}
 		float t = 0;
 		while (t < 1.0f) {
 			t += Time.deltaTime;
@@ -37,6 +46,14 @@ public class Door : MonoBehaviour {
 	{
 		if (!isLocked) {
 			StartCoroutine (OpenClose ());
+		} else {
+			aSource.clip = doorSounds [2];
+			aSource.Play();
 		}
+	}
+
+	public void LockUnlockDoor()
+	{
+		isLocked = !isLocked;
 	}
 }

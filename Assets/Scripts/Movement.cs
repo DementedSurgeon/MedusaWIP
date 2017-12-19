@@ -13,6 +13,7 @@ public class Movement : MonoBehaviour {
 	private float timer = 0;
 	private AudioSource aSource;
 	private Collider[] cols;
+	public AudioClip[] footsteps;
 	// Use this for initialization
 	void Start () {
 		walkSpeed = speed;
@@ -25,23 +26,39 @@ public class Movement : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (moving) {
+			if (speed == walkSpeed) {
+				if (aSource.clip != footsteps [0]) {
+					aSource.clip = footsteps [0];
+				}
+			} else if (speed == sprintSpeed) {
+				if (aSource.clip != footsteps [1]) {
+					aSource.clip = footsteps [1];
+				}
+			} else if (speed == crouchSpeed) {
+				if (aSource.clip != footsteps [2]) {
+					aSource.clip = footsteps [2];
+				}
+			}
 			if (!aSource.isPlaying) {
 				aSource.Play ();
 			}
 			if (timer <= 0) {
+				
 				cols = Physics.OverlapSphere (transform.position, 1 * speed);
 				for (int i = 0; i < cols.Length; i++) {
 					if (cols [i].gameObject.tag == "Medusa") {
 						cols [i].GetComponent<AlertState> ().Alert (transform);
+						i = cols.Length;
+						Debug.Log ("Medusa heard");
 					}
-					timer = 6 / speed;
 				}
+				timer = walkSpeed / speed;
 			} else {
 				timer -= Time.deltaTime;
 			}
 		} else if (!moving) {
 			if (aSource.isPlaying) {
-				aSource.Stop ();
+				aSource.Pause ();
 			}
 		}
 
@@ -49,7 +66,11 @@ public class Movement : MonoBehaviour {
 		float amountWS = Input.GetAxis ("Vertical");
 		Vector3 movement = ((transform.right * amountAD) + (transform.forward * amountWS)) * speed;
 		rBody.velocity = new Vector3 (movement.x, rBody.velocity.y, movement.z);
-		if (amountAD == 0 && amountWS == 0) {
+		if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)) {
+			moving = true;
+		} else if (!Input.GetKey(KeyCode.W) & !Input.GetKey(KeyCode.A) & !Input.GetKey(KeyCode.S) & !Input.GetKey(KeyCode.D))
+		{
+			moving = false;
 			rBody.velocity = new Vector3 (0, rBody.velocity.y, 0);
 		}
 
@@ -77,38 +98,5 @@ public class Movement : MonoBehaviour {
 			rBody.AddForce (Vector3.up * 500);
 		}
 
-		/*if (Input.GetKey (KeyCode.W)) {
-			rBody.velocity = new Vector3 (transform.forward.x * speed, rBody.velocity.y, transform.forward.z * speed);
-			moving = true;
-		}
-
-		if (Input.GetKey (KeyCode.A)) {
-			rBody.velocity = transform.right * -speed;
-			moving = true;
-		}
-		if (Input.GetKey (KeyCode.S)) {
-			rBody.velocity = transform.forward * -speed;
-			moving = true;
-		}
-		if (Input.GetKey (KeyCode.D)) {
-			rBody.velocity = new Vector3 (transform.right.x * speed, rBody.velocity.y, transform.right.z * speed);
-			moving = true;
-		}
-		if (Input.GetKeyUp (KeyCode.W)) {
-			rBody.velocity = new Vector3 (0, rBody.velocity.y, 0);
-			moving = false;
-		}
-		if (Input.GetKeyUp (KeyCode.A)) {
-			rBody.velocity = new Vector3 (0, rBody.velocity.y, 0);
-			moving = false;
-		}
-		if (Input.GetKeyUp (KeyCode.S)) {
-			rBody.velocity = new Vector3 (0, rBody.velocity.y, 0);
-			moving = false;
-		}
-		if (Input.GetKeyUp (KeyCode.D)) {
-			rBody.velocity = new Vector3 (0, rBody.velocity.y, 0);
-			moving = false;
-		}*/
 	}
 }

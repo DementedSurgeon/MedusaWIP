@@ -9,7 +9,7 @@ public class GrabThings : MonoBehaviour {
 	public GlyphManager gManager;
 	private Transform throwable;
 	private Transform glyph;
-	private GameObject floorShard;
+	private FloorShard floorShard;
 	private Door door;
 	private Rigidbody stuffs;
 	private bool grabbed = false;
@@ -64,7 +64,7 @@ public class GrabThings : MonoBehaviour {
 		if (canEquip) {
 			if (Input.GetKeyDown (KeyCode.F)) {
 				shard.gameObject.SetActive (true);
-				floorShard.SetActive (false);
+				floorShard.Equip ();
 			}
 		}
 		if (canOpen) {
@@ -88,7 +88,7 @@ public class GrabThings : MonoBehaviour {
 		}
 		if (col.gameObject.tag == "Shard") {
 			canEquip = true;
-			floorShard = col.gameObject;
+			floorShard = col.GetComponent<FloorShard> ();
 		}
 		if (col.gameObject.tag == "Door") {
 			canOpen = true;
