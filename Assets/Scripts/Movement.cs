@@ -14,6 +14,7 @@ public class Movement : MonoBehaviour {
 	private AudioSource aSource;
 	private Collider[] cols;
 	public AudioClip[] footsteps;
+	private bool inAir = false;
 	// Use this for initialization
 	void Start () {
 		walkSpeed = speed;
@@ -95,8 +96,22 @@ public class Movement : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown (KeyCode.Space)) {
-			rBody.AddForce (Vector3.up * 500);
+			if (!inAir) {
+				rBody.AddForce (Vector3.up * 500);
+				inAir = true;
+			}
 		}
 
 	}
+
+	void OnCollisionEnter (Collision col)
+	{
+		if (col.gameObject.tag == "Terrain" || col.gameObject.tag == "Grabbable") {
+			if (inAir) {
+				inAir = false;
+			}
+		}
+	}
 }
+
+

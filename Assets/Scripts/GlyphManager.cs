@@ -28,6 +28,9 @@ public class GlyphManager : MonoBehaviour {
 
 	public Transform GetActiveGlyph()
 	{
+		if (!glyphs [activeGlyph].activeSelf) {
+			glyphs [activeGlyph].SetActive (true);
+		}
 		if (activeGlyph >= 0) {
 			return glyphs [activeGlyph].transform;
 		} else {

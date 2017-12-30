@@ -105,7 +105,7 @@ public class MedusaMovement : MonoBehaviour {
 		while (t < 1.0f) {
 			t += Time.deltaTime * 5;
 			transform.position = Vector3.Lerp (startPos, jumpPoint, t);
-			transform.eulerAngles = Vector3.Lerp(transform.eulerAngles, new Vector3(180, transform.eulerAngles.y, transform.eulerAngles.z), t);
+			//transform.eulerAngles = Vector3.Lerp(transform.eulerAngles, new Vector3(180, transform.eulerAngles.y, transform.eulerAngles.z), t);
 			yield return null;
 		}
 		nMA.enabled = true;

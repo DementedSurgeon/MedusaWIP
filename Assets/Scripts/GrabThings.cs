@@ -25,7 +25,14 @@ public class GrabThings : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (canGrab) {
+		if (canDestroy) {
+			if (Input.GetKeyDown (KeyCode.F)) {
+				glyph.gameObject.SetActive (false);
+				canDestroy = false;
+				glyph = null;
+				GlyphManager.activeGlyph--;
+			}
+		} else if (canGrab) {
 			if (!grabbed) {
 				if (Input.GetKeyDown (KeyCode.F)) {
 					throwable.SetParent (transform);
@@ -53,14 +60,7 @@ public class GrabThings : MonoBehaviour {
 				}
 			}
 		} 
-		if (canDestroy) {
-			if (Input.GetKeyDown (KeyCode.F)) {
-				glyph.gameObject.SetActive (false);
-				canDestroy = false;
-				glyph = null;
-				GlyphManager.activeGlyph--;
-			}
-		}
+	
 		if (canEquip) {
 			if (Input.GetKeyDown (KeyCode.F)) {
 				shard.gameObject.SetActive (true);

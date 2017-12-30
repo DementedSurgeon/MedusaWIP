@@ -91,12 +91,11 @@ public class AlertState : MonoBehaviour {
 				agent.destination = new Vector3 (alertCenter.position.x, 14, alertCenter.position.z);
 			}
 
-			if (alertCenter.transform.parent != null) {
-				if (alertCenter.transform.parent.tag == "Player") {
+			if (alertCenter.transform.tag == "Player") {
 					alertCounter++;
 					Debug.Log ("Alerted");
 				}
-			}
+
 			if (alertCounter >= 3) {
 				prey = alertCenter;
 				StartCoroutine (Hunt ());
